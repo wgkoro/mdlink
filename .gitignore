@@ -1,0 +1,27 @@
+# Go
+/mdlink
+*.exe
+*.test
+*.out
+go.work
+go.work.sum
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+
+# Python measurement helpers
+__pycache__/
+
+# Local work records
+/worklogs/
+worklogs
+
+# LLM
+AGENTS.md

@@ -1,0 +1,1 @@
+{"schema_version":1,"command":"backlinks","root":".","target":"target.png","results":[{"path":"Z.md","count":1},{"path":"a/Source.md","count":2},{"path":"Å.md","count":1}],"diagnostics":[{"code":"unresolved-link","source":"Unrelated.md","offset":0,"raw_target":"missing"}]}

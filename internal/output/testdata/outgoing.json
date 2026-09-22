@@ -1,0 +1,1 @@
+{"schema_version":1,"command":"outgoing","root":".","target":"Source.md","results":[{"path":"A.md","count":2}],"diagnostics":[{"code":"unresolved-link","source":"Source.md","offset":0,"raw_target":"missing"},{"code":"skipped-symlink","source":"alias"}]}

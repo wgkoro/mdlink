@@ -1,0 +1,50 @@
+name: Release artifacts
+
+on:
+  push:
+    tags: ['v1.0.0']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - name: Verify source commit
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+        run: test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+      - uses: actions/setup-go@v7
+        with:
+          go-version: '1.27.1'
+      - name: Check formatting
+        shell: bash
+        run: |
+          unformatted=$(gofmt -l .)
+          if [ -n "$unformatted" ]; then
+            printf '%s\n' "$unformatted"
+            exit 1
+          fi
+      - run: go vet ./...
+      - run: go test ./...
+      - run: go test -race ./...
+      - run: python3 -m unittest discover -s scripts
+      - name: Prepare and validate artifacts
+        id: artifacts
+        shell: bash
+        run: |
+          release_parent=$(mktemp -d "$RUNNER_TEMP/mdlink-release.XXXXXX")
+          mkdir "$release_parent/upload"
+          python3 scripts/release.py --output "$release_parent/artifact" \
+            --archive "$release_parent/upload/mdlink-v1.0.0.tar.gz" \
+            > "$release_parent/upload/verification-linux-amd64.json"
+          printf 'directory=%s\n' "$release_parent/upload" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: mdlink-v1.0.0-${{ github.sha }}
+          path: ${{ steps.artifacts.outputs.directory }}
+          if-no-files-found: error
